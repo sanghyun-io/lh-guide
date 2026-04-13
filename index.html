@@ -224,7 +224,7 @@
         <div class="flex items-center gap-2 mb-2.5">
           <label class="text-[11px] text-gray-400 whitespace-nowrap flex-shrink-0">대출 금액</label>
           <input type="text" id="loan-amount-input" inputmode="numeric"
-                 oninput="onLoanAmountInput(this.value)" onblur="this.value=loanRatio>0?fmt(Math.round(totalDeposit*loanRatio/100)):''"
+                 oninput="onLoanAmountInput(this)" onblur="this.value=loanRatio>0?fmtNum(Math.round(totalDeposit*loanRatio/100)):''"
                  class="flex-1 text-xs text-right text-gray-500 font-medium outline-none bg-transparent border-b border-gray-200 focus:border-blue-400 py-0.5">
         </div>
         <div class="flex gap-1.5 flex-wrap">
@@ -366,6 +366,9 @@ function getUnitMeta(ho) {
 function fmt(n) {
   return new Intl.NumberFormat('ko-KR').format(Math.round(n)) + '원';
 }
+function fmtNum(n) {
+  return new Intl.NumberFormat('ko-KR').format(Math.round(n));
+}
 function fmtShort(n) {
   const v = Math.round(n);
   if (v >= 100000000) return (v / 100000000).toFixed(1).replace(/\.0$/, '') + '억';
@@ -424,7 +427,7 @@ function setLoanRatio(ratio, source) {
     document.getElementById('loan-ratio-input').value = ratio;
   }
   if (source !== 'amount-input') {
-    document.getElementById('loan-amount-input').value = ratio > 0 ? fmt(Math.round(totalDeposit * ratio / 100)) : '';
+    document.getElementById('loan-amount-input').value = ratio > 0 ? fmtNum(Math.round(totalDeposit * ratio / 100)) : '';
   }
   updateSliderFill();
   document.querySelectorAll('.loan-preset').forEach(function(btn) {
@@ -439,8 +442,10 @@ function onLoanRatioInput(val) {
   if (n > 80) n = 80;
   setLoanRatio(n, 'ratio-input');
 }
-function onLoanAmountInput(val) {
-  var n = parseInt(val.replace(/[^0-9]/g, ''), 10);
+function onLoanAmountInput(el) {
+  var raw = el.value.replace(/[^0-9]/g, '');
+  el.value = raw;
+  var n = parseInt(raw, 10);
   if (isNaN(n) || totalDeposit === 0) { setLoanRatio(0, 'amount-input'); return; }
   var ratio = Math.round(n / totalDeposit * 100);
   if (ratio > 80) ratio = 80;
@@ -777,7 +782,7 @@ if (defaultUnitIdx !== -1) {
 setInputValue('input-total', totalDeposit);
 setInputValue('input-basic', basicDeposit);
 updateSliderFill();
-document.getElementById('loan-amount-input').value = fmt(Math.round(totalDeposit * loanRatio / 100));
+document.getElementById('loan-amount-input').value = fmtNum(Math.round(totalDeposit * loanRatio / 100));
 render();
 </script>
 </body>

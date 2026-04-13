@@ -61,6 +61,38 @@
       color: #374151;
     }
 
+    /* Range slider */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 8px;
+      border-radius: 4px;
+      background: #e5e7eb;
+      outline: none;
+      cursor: pointer;
+      flex: 1;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #2563eb;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(37,99,235,0.35);
+      border: 3px solid white;
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #2563eb;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(37,99,235,0.35);
+      border: 3px solid white;
+    }
+
     /* Bottom sheet */
     .sheet-backdrop {
       position: fixed; inset: 0;
@@ -126,7 +158,7 @@
       <div class="text-gray-600 text-sm sm:text-base mb-3">
         <span>총 보증금</span>
         <span class="font-bold text-gray-900" id="display-total"></span>
-        <span class="block sm:inline text-xs sm:text-base mt-1 sm:mt-0">(내 돈 20% + 대출 80%)</span>
+        <span class="block sm:inline text-xs sm:text-base mt-1 sm:mt-0" id="display-ratio">(내 돈 20% + 대출 80%)</span>
       </div>
 
       <!-- Summary pill (opens bottom sheet) -->
@@ -151,100 +183,7 @@
     </div>
 
     <!-- Flow Tab -->
-    <div id="content-flow" class="space-y-5 sm:space-y-8 animate-fade">
-      <!-- Progress Bar -->
-      <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-200">
-        <h3 class="font-bold text-gray-800 mb-3 sm:mb-4 text-sm sm:text-base">전체 자금 구성 비율</h3>
-        <div class="h-5 sm:h-6 w-full bg-gray-100 rounded-full overflow-hidden flex">
-          <div class="h-full bg-green-500 flex items-center justify-center text-[10px] sm:text-xs text-white font-bold" style="width:5%">5%</div>
-          <div class="h-full bg-green-400 flex items-center justify-center text-[10px] sm:text-xs text-white font-bold" style="width:15%">15%</div>
-          <div class="h-full bg-blue-500 flex items-center justify-center text-[10px] sm:text-xs text-white font-bold" style="width:80%">대출 80%</div>
-        </div>
-        <div class="flex flex-col sm:flex-row sm:justify-between mt-3 gap-1.5 sm:gap-0 text-xs sm:text-sm font-medium">
-          <div class="flex gap-3 sm:gap-4">
-            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-500 rounded-full"></span>내 보유금 (5%)</span>
-            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-400 rounded-full"></span>전세 반환금 (15%)</span>
-          </div>
-          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-blue-500 rounded-full"></span>은행 대출금 (80%)</span>
-        </div>
-      </div>
-
-      <!-- Account Cards -->
-      <div class="grid md:grid-cols-2 gap-4 sm:gap-6">
-        <!-- Account A -->
-        <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden flex flex-col h-full">
-          <div class="p-4 sm:p-5 bg-blue-600 text-white">
-            <div class="flex justify-between items-center mb-1">
-              <h3 class="text-lg sm:text-xl font-bold">[계좌 A] 기본 보증금</h3>
-              <span class="bg-red-500 text-white text-[10px] sm:text-xs font-bold px-2 py-1 rounded">필수 완납</span>
-            </div>
-            <p class="opacity-80 text-xs sm:text-sm">완납되어야 번호키 수령 가능</p>
-            <div class="mt-3 sm:mt-4 text-2xl sm:text-3xl font-extrabold" id="display-basic"></div>
-          </div>
-          <div class="p-4 sm:p-5 flex-1 flex flex-col gap-3 sm:gap-4">
-            <div class="bg-gray-50 p-3 sm:p-4 rounded-xl border border-gray-100">
-              <div class="flex justify-between items-start mb-1.5 sm:mb-2">
-                <div class="flex items-center gap-2">
-                  <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500"></span>
-                  <span class="font-bold text-gray-800 text-sm sm:text-base">나 (5% 중 일부)</span>
-                </div>
-                <span class="font-bold text-base sm:text-lg text-gray-900" id="flow-a-me"></span>
-              </div>
-              <p class="text-xs sm:text-sm text-gray-500 ml-5">계약금 + 대출요건 충족 위한 추가납부 (대출 신청 전)</p>
-            </div>
-            <div class="bg-gray-50 p-3 sm:p-4 rounded-xl border border-gray-100">
-              <div class="flex justify-between items-start mb-1.5 sm:mb-2">
-                <div class="flex items-center gap-2">
-                  <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-blue-500"></span>
-                  <span class="font-bold text-gray-800 text-sm sm:text-base">은행</span>
-                </div>
-                <span class="font-bold text-base sm:text-lg text-gray-900" id="flow-a-bank"></span>
-              </div>
-              <p class="text-xs sm:text-sm text-gray-500 ml-5">80% 대출금 중 일부 지정 입금 (입주 당일)</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Account B -->
-        <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden flex flex-col h-full">
-          <div class="p-4 sm:p-5 bg-gray-800 text-white">
-            <div class="flex justify-between items-center mb-1">
-              <h3 class="text-lg sm:text-xl font-bold">[계좌 B] 전환 보증금</h3>
-            </div>
-            <p class="opacity-80 text-xs sm:text-sm">증액 보증금 납부 전용</p>
-            <div class="mt-3 sm:mt-4 text-2xl sm:text-3xl font-extrabold" id="flow-b-total"></div>
-          </div>
-          <div class="p-4 sm:p-5 flex-1 flex flex-col gap-3 sm:gap-4">
-            <div class="bg-gray-50 p-3 sm:p-4 rounded-xl border border-gray-100">
-              <div class="flex justify-between items-start mb-1.5 sm:mb-2">
-                <div class="flex items-center gap-2">
-                  <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-blue-500"></span>
-                  <span class="font-bold text-gray-800 text-sm sm:text-base">은행</span>
-                </div>
-                <span class="font-bold text-base sm:text-lg text-gray-900" id="flow-b-bank"></span>
-              </div>
-              <p class="text-xs sm:text-sm text-gray-500 ml-5">80% 대출금 중 나머지 잔액 (입주 당일)</p>
-            </div>
-            <div class="bg-gray-50 p-3 sm:p-4 rounded-xl border border-gray-100">
-              <div class="flex justify-between items-start mb-1.5 sm:mb-2">
-                <div class="flex items-center gap-2">
-                  <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500"></span>
-                  <span class="font-bold text-gray-800 text-sm sm:text-base">나 (15%)</span>
-                </div>
-                <span class="font-bold text-base sm:text-lg text-gray-900" id="flow-b-me"></span>
-              </div>
-              <p class="text-xs sm:text-sm text-gray-500 ml-5">기존 전세임대 보증금 반환받은 돈 (입주 당일)</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tip -->
-      <div class="bg-blue-50 p-4 sm:p-5 rounded-xl border border-blue-100 flex gap-3 sm:gap-4">
-        <div class="text-2xl sm:text-3xl flex-shrink-0">💡</div>
-        <p class="text-xs sm:text-sm text-blue-900 leading-relaxed" id="flow-tip"></p>
-      </div>
-    </div>
+    <div id="content-flow" class="space-y-5 sm:space-y-8 animate-fade"></div>
 
     <!-- Timeline Tab -->
     <div id="content-timeline" class="max-w-3xl mx-auto py-2 sm:py-4 hidden"></div>
@@ -267,6 +206,23 @@
         <button onclick="closeSheet()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
+      </div>
+
+      <!-- Loan ratio -->
+      <div class="mb-4">
+        <label class="block text-xs font-semibold text-gray-500 mb-2">대출 비율</label>
+        <div class="flex items-center gap-3 mb-2">
+          <input type="range" id="loan-slider" min="0" max="80" step="5" value="80"
+                 oninput="setLoanRatio(parseInt(this.value))">
+          <span id="loan-ratio-display" class="text-sm font-bold text-blue-600 min-w-[52px] text-right">80%</span>
+        </div>
+        <div class="flex gap-1.5 flex-wrap">
+          <button class="loan-preset income-btn inactive text-xs px-2.5 py-1" data-ratio="0" onclick="setLoanRatio(0)">전액 자비</button>
+          <button class="loan-preset income-btn inactive text-xs px-2.5 py-1" data-ratio="40" onclick="setLoanRatio(40)">40%</button>
+          <button class="loan-preset income-btn inactive text-xs px-2.5 py-1" data-ratio="60" onclick="setLoanRatio(60)">60%</button>
+          <button class="loan-preset income-btn inactive text-xs px-2.5 py-1" data-ratio="70" onclick="setLoanRatio(70)">70%</button>
+          <button class="loan-preset income-btn active text-xs px-2.5 py-1" data-ratio="80" onclick="setLoanRatio(80)">80%</button>
+        </div>
       </div>
 
       <!-- Income toggle -->
@@ -377,6 +333,7 @@ let totalDeposit = 123771000;
 let basicDeposit = 30271000;
 let activeTab = 'flow';
 let incomeType = 'other';
+let loanRatio = 80;
 let selectedUnit = null;
 
 // --- Type / Direction mapping (by last digit of ho) ---
@@ -447,6 +404,24 @@ function populateUnitSelect() {
   });
 }
 
+// --- Loan ratio control ---
+function setLoanRatio(ratio) {
+  loanRatio = ratio;
+  document.getElementById('loan-slider').value = ratio;
+  document.getElementById('loan-ratio-display').textContent = ratio === 0 ? '전액 자비' : ratio + '%';
+  updateSliderFill();
+  document.querySelectorAll('.loan-preset').forEach(function(btn) {
+    var val = parseInt(btn.dataset.ratio);
+    btn.className = 'loan-preset income-btn ' + (val === ratio ? 'active' : 'inactive') + ' text-xs px-2.5 py-1';
+  });
+  render();
+}
+function updateSliderFill() {
+  var slider = document.getElementById('loan-slider');
+  var pct = (slider.value / 80) * 100;
+  slider.style.background = 'linear-gradient(to right, #2563eb ' + pct + '%, #e5e7eb ' + pct + '%)';
+}
+
 // --- Income type toggle ---
 function setIncomeType(type) {
   incomeType = type;
@@ -482,65 +457,232 @@ function onUnitChange() {
 // --- Compute ---
 function compute() {
   const convDeposit = totalDeposit - basicDeposit;
-  const myReserve = totalDeposit * 0.05;
-  const leaseReturn = totalDeposit * 0.15;
-  const loanTotal = totalDeposit * 0.80;
-  const aMe = myReserve;
-  const aBank = basicDeposit - myReserve;
-  const bBank = loanTotal - aBank;
-  const bMe = leaseReturn;
   const contractPay = basicDeposit * 0.10;
-  const additionalPay = myReserve - contractPay;
-  return { convDeposit, myReserve, leaseReturn, loanTotal, aMe, aBank, bBank, bMe, contractPay, additionalPay };
+
+  if (loanRatio === 0) {
+    const aRemain = basicDeposit - contractPay;
+    return { useLoan: false, loanRatio: 0, convDeposit, contractPay, aRemain,
+             loanTotal: 0, aMe: basicDeposit, aBank: 0, bBank: 0, bMe: convDeposit,
+             additionalPay: 0, reservePct: 0, returnPct: 0 };
+  }
+
+  const loanTotal = totalDeposit * loanRatio / 100;
+  const minReserve = totalDeposit * 0.05;
+  let aMe, aBank;
+  if (loanTotal >= basicDeposit - minReserve) {
+    aMe = minReserve;
+    aBank = basicDeposit - aMe;
+  } else {
+    aBank = loanTotal;
+    aMe = basicDeposit - aBank;
+  }
+  const bBank = loanTotal - aBank;
+  const bMe = convDeposit - bBank;
+  const additionalPay = aMe - contractPay;
+  const reservePct = Math.round(aMe / totalDeposit * 100);
+  const returnPct = 100 - loanRatio - reservePct;
+
+  return { useLoan: true, loanRatio, convDeposit, loanTotal,
+           aMe, aBank, bBank, bMe, contractPay, additionalPay,
+           reservePct, returnPct };
+}
+
+// --- Render flow tab ---
+function renderFlow(c) {
+  const el = document.getElementById('content-flow');
+  if (c.useLoan) {
+    const rp = c.reservePct;
+    const tp = c.returnPct;
+    const lp = c.loanRatio;
+    const bankTip = c.bBank > 0
+      ? `"대출금(${fmt(c.loanTotal)}) 중 <strong>${fmt(c.aBank)}</strong>은 계약서에 있는 [기본 잔금 계좌]로, 나머지 <strong>${fmt(c.bBank)}</strong>은 안내문에 있는 [전환보증금 계좌]로 나누어서 입금해 주세요."`
+      : `"대출금 전액(<strong>${fmt(c.loanTotal)}</strong>)을 계약서에 있는 [기본 잔금 계좌]로 입금해 주세요."`;
+    el.innerHTML = `
+      <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-200">
+        <h3 class="font-bold text-gray-800 mb-3 sm:mb-4 text-sm sm:text-base">전체 자금 구성 비율</h3>
+        <div class="h-5 sm:h-6 w-full bg-gray-100 rounded-full overflow-hidden flex">
+          ${rp > 0 ? `<div class="h-full bg-green-500 flex items-center justify-center text-[10px] sm:text-xs text-white font-bold" style="width:${rp}%">${rp}%</div>` : ''}
+          ${tp > 0 ? `<div class="h-full bg-green-400 flex items-center justify-center text-[10px] sm:text-xs text-white font-bold" style="width:${tp}%">${tp}%</div>` : ''}
+          <div class="h-full bg-blue-500 flex items-center justify-center text-[10px] sm:text-xs text-white font-bold" style="width:${lp}%">대출 ${lp}%</div>
+        </div>
+        <div class="flex flex-col sm:flex-row sm:justify-between mt-3 gap-1.5 sm:gap-0 text-xs sm:text-sm font-medium">
+          <div class="flex gap-3 sm:gap-4">
+            ${rp > 0 ? `<span class="flex items-center gap-1"><span class="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-500 rounded-full"></span>자기자금 A (${rp}%)</span>` : ''}
+            ${tp > 0 ? `<span class="flex items-center gap-1"><span class="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-400 rounded-full"></span>자기자금 B (${tp}%)</span>` : ''}
+          </div>
+          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-blue-500 rounded-full"></span>은행 대출금 (${lp}%)</span>
+        </div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4 sm:gap-6">
+        <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden flex flex-col h-full">
+          <div class="p-4 sm:p-5 bg-blue-600 text-white">
+            <div class="flex justify-between items-center mb-1">
+              <h3 class="text-lg sm:text-xl font-bold">[계좌 A] 기본 보증금</h3>
+              <span class="bg-red-500 text-white text-[10px] sm:text-xs font-bold px-2 py-1 rounded">필수 완납</span>
+            </div>
+            <p class="opacity-80 text-xs sm:text-sm">완납되어야 번호키 수령 가능</p>
+            <div class="mt-3 sm:mt-4 text-2xl sm:text-3xl font-extrabold">${fmt(basicDeposit)}</div>
+          </div>
+          <div class="p-4 sm:p-5 flex-1 flex flex-col gap-3 sm:gap-4">
+            <div class="bg-gray-50 p-3 sm:p-4 rounded-xl border border-gray-100">
+              <div class="flex justify-between items-start mb-1.5 sm:mb-2">
+                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500"></span><span class="font-bold text-gray-800 text-sm sm:text-base">나 (선납)</span></div>
+                <span class="font-bold text-base sm:text-lg text-gray-900">${fmt(c.aMe)}</span>
+              </div>
+              <p class="text-xs sm:text-sm text-gray-500 ml-5">계약금(${fmt(c.contractPay)}) + 추가납부(${fmt(c.additionalPay)}) — 대출 신청 전</p>
+            </div>
+            ${c.aBank > 0 ? `<div class="bg-gray-50 p-3 sm:p-4 rounded-xl border border-gray-100">
+              <div class="flex justify-between items-start mb-1.5 sm:mb-2">
+                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-blue-500"></span><span class="font-bold text-gray-800 text-sm sm:text-base">은행 (대출)</span></div>
+                <span class="font-bold text-base sm:text-lg text-gray-900">${fmt(c.aBank)}</span>
+              </div>
+              <p class="text-xs sm:text-sm text-gray-500 ml-5">대출금 중 기본보증금 잔액분 (입주 당일)</p>
+            </div>` : ''}
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden flex flex-col h-full">
+          <div class="p-4 sm:p-5 bg-gray-800 text-white">
+            <div class="flex justify-between items-center mb-1"><h3 class="text-lg sm:text-xl font-bold">[계좌 B] 전환 보증금</h3></div>
+            <p class="opacity-80 text-xs sm:text-sm">증액 보증금 납부 전용</p>
+            <div class="mt-3 sm:mt-4 text-2xl sm:text-3xl font-extrabold">${fmt(c.convDeposit)}</div>
+          </div>
+          <div class="p-4 sm:p-5 flex-1 flex flex-col gap-3 sm:gap-4">
+            ${c.bBank > 0 ? `<div class="bg-gray-50 p-3 sm:p-4 rounded-xl border border-gray-100">
+              <div class="flex justify-between items-start mb-1.5 sm:mb-2">
+                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-blue-500"></span><span class="font-bold text-gray-800 text-sm sm:text-base">은행 (대출)</span></div>
+                <span class="font-bold text-base sm:text-lg text-gray-900">${fmt(c.bBank)}</span>
+              </div>
+              <p class="text-xs sm:text-sm text-gray-500 ml-5">대출금 나머지 잔액 (입주 당일)</p>
+            </div>` : ''}
+            ${c.bMe > 0 ? `<div class="bg-gray-50 p-3 sm:p-4 rounded-xl border border-gray-100">
+              <div class="flex justify-between items-start mb-1.5 sm:mb-2">
+                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500"></span><span class="font-bold text-gray-800 text-sm sm:text-base">나 (자기자금)</span></div>
+                <span class="font-bold text-base sm:text-lg text-gray-900">${fmt(c.bMe)}</span>
+              </div>
+              <p class="text-xs sm:text-sm text-gray-500 ml-5">자기자금으로 납부 (입주 당일까지)</p>
+            </div>` : ''}
+          </div>
+        </div>
+      </div>
+      <div class="bg-blue-50 p-4 sm:p-5 rounded-xl border border-blue-100 flex gap-3 sm:gap-4">
+        <div class="text-2xl sm:text-3xl flex-shrink-0">💡</div>
+        <p class="text-xs sm:text-sm text-blue-900 leading-relaxed"><strong>은행원에게 꼭 전달하세요:</strong><br>${bankTip}</p>
+      </div>`;
+  } else {
+    el.innerHTML = `
+      <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-200">
+        <h3 class="font-bold text-gray-800 mb-3 sm:mb-4 text-sm sm:text-base">전체 자금 구성 비율</h3>
+        <div class="h-5 sm:h-6 w-full bg-gray-100 rounded-full overflow-hidden flex">
+          <div class="h-full bg-green-500 flex items-center justify-center text-[10px] sm:text-xs text-white font-bold" style="width:100%">내 돈 100%</div>
+        </div>
+        <div class="flex mt-3 gap-1.5 text-xs sm:text-sm font-medium">
+          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-500 rounded-full"></span>전액 자비 납부</span>
+        </div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4 sm:gap-6">
+        <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden flex flex-col h-full">
+          <div class="p-4 sm:p-5 bg-blue-600 text-white">
+            <div class="flex justify-between items-center mb-1">
+              <h3 class="text-lg sm:text-xl font-bold">[계좌 A] 기본 보증금</h3>
+              <span class="bg-red-500 text-white text-[10px] sm:text-xs font-bold px-2 py-1 rounded">필수 완납</span>
+            </div>
+            <p class="opacity-80 text-xs sm:text-sm">완납되어야 번호키 수령 가능</p>
+            <div class="mt-3 sm:mt-4 text-2xl sm:text-3xl font-extrabold">${fmt(basicDeposit)}</div>
+          </div>
+          <div class="p-4 sm:p-5 flex-1 flex flex-col gap-3 sm:gap-4">
+            <div class="bg-gray-50 p-3 sm:p-4 rounded-xl border border-gray-100">
+              <div class="flex justify-between items-start mb-1.5 sm:mb-2">
+                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500"></span><span class="font-bold text-gray-800 text-sm sm:text-base">나</span></div>
+                <span class="font-bold text-base sm:text-lg text-gray-900">${fmt(basicDeposit)}</span>
+              </div>
+              <p class="text-xs sm:text-sm text-gray-500 ml-5">계약금(${fmt(c.contractPay)}) + 잔금(${fmt(c.aRemain)})</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden flex flex-col h-full">
+          <div class="p-4 sm:p-5 bg-gray-800 text-white">
+            <div class="flex justify-between items-center mb-1"><h3 class="text-lg sm:text-xl font-bold">[계좌 B] 전환 보증금</h3></div>
+            <p class="opacity-80 text-xs sm:text-sm">증액 보증금 납부 전용</p>
+            <div class="mt-3 sm:mt-4 text-2xl sm:text-3xl font-extrabold">${fmt(c.convDeposit)}</div>
+          </div>
+          <div class="p-4 sm:p-5 flex-1 flex flex-col gap-3 sm:gap-4">
+            <div class="bg-gray-50 p-3 sm:p-4 rounded-xl border border-gray-100">
+              <div class="flex justify-between items-start mb-1.5 sm:mb-2">
+                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500"></span><span class="font-bold text-gray-800 text-sm sm:text-base">나</span></div>
+                <span class="font-bold text-base sm:text-lg text-gray-900">${fmt(c.convDeposit)}</span>
+              </div>
+              <p class="text-xs sm:text-sm text-gray-500 ml-5">전환 보증금 전액 자비 납부 (입주 당일까지)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-green-50 p-4 sm:p-5 rounded-xl border border-green-100 flex gap-3 sm:gap-4">
+        <div class="text-2xl sm:text-3xl flex-shrink-0">💡</div>
+        <p class="text-xs sm:text-sm text-green-900 leading-relaxed"><strong>전액 자비 납부 시:</strong><br>대출 절차가 없으므로 은행 방문이 불필요합니다. 계약금 납부 후 입주일까지 잔금을 계좌 A, B에 각각 입금하면 됩니다.</p>
+      </div>`;
+  }
 }
 
 function render() {
   const c = compute();
   document.getElementById('display-total').textContent = fmt(totalDeposit);
-  document.getElementById('display-basic').textContent = fmt(basicDeposit);
-  document.getElementById('flow-a-me').textContent = fmt(c.aMe);
-  document.getElementById('flow-a-bank').textContent = fmt(c.aBank);
-  document.getElementById('flow-b-total').textContent = fmt(c.convDeposit);
-  document.getElementById('flow-b-bank').textContent = fmt(c.bBank);
-  document.getElementById('flow-b-me').textContent = fmt(c.bMe);
-  document.getElementById('flow-tip').innerHTML =
-    `<strong>은행원에게 꼭 전달하세요:</strong><br>` +
-    `"대출금(${fmt(c.loanTotal)}) 중 <strong>${fmt(c.aBank)}</strong>은 계약서에 있는 [기본 잔금 계좌]로, ` +
-    `나머지 <strong>${fmt(c.bBank)}</strong>은 안내문에 있는 [전환보증금 계좌]로 나누어서 입금해 주세요."`;
+  document.getElementById('display-ratio').textContent = c.useLoan ? '(내 돈 ' + (100 - loanRatio) + '% + 대출 ' + loanRatio + '%)' : '(전액 자비 납부)';
+  renderFlow(c);
   renderTimeline(c);
   updateSummary();
 }
 
 function renderTimeline(c) {
-  const steps = [
-    { step:1, icon:'📝', title:'전세보증금 반환서약서 준비 및 제출', time:'계약 전 (사전 진행)',
-      items: ['현재 거주 중인 집주인과 전세임대 해지(퇴거) 구두 협의','전세보증금 반환서약서 작성 및 LH 담당자에게 미리 제출 (이메일/팩스)']},
-    { step:2, icon:'✍️', title:'매입임대 계약 체결', time:'다음 주 수요일',
-      items: ['LH 고양권 지사 방문 및 계약서 작성',`<span class="font-bold text-green-600">[계좌 A]에 ${fmt(c.contractPay)} 입금</span> (기본 보증금 10%)`,"계약 후 '전환보증금 안내문' 반드시 챙기기"]},
-    { step:3, icon:'🏦', title:'대출 요건 충족 및 신청', time:'계약 직후',
-      items: [`<span class="font-bold text-green-600">[계좌 A]에 ${fmt(c.additionalPay)} 추가 입금</span>`,`(이로써 총 보증금의 5%인 ${fmt(c.aMe)} 납부 완료)`,'영수증, 계약서, 전환보증금 안내문 지참하여 은행 대출(80%) 신청']},
-    { step:4, icon:'📅', title:'입주 전 이사 일정 조율', time:'입주 전',
-      items: ['관리소와 입주(이사) 날짜 및 시간 조율','필요 시 전입신고 및 확정일자 등 사전 행정절차 확인']},
-    { step:5, icon:'🌅', title:'기존 전세임대 해지', time:'입주 당일 오전',
-      items: ['집주인이 LH로 기존 전세금 반환','LH 전세임대 해지 완료 및 내 몫의 정산금(15% 해당) 수령']},
-    { step:6, icon:'💸', title:'대출 실행 및 잔금 완납', time:'입주 당일 오후',
-      custom: `<div class="mt-2 space-y-2">
-        <div class="bg-gray-50 p-2.5 sm:p-3 rounded border border-gray-200 text-xs sm:text-sm">
-          <strong>은행 입금:</strong><br class="sm:hidden"> <span class="text-blue-600 font-bold">[계좌 A] ${fmt(c.aBank)}</span><br class="sm:hidden"> / <span class="text-blue-600 font-bold">[계좌 B] ${fmt(c.bBank)}</span>
-        </div>
-        <div class="bg-gray-50 p-2.5 sm:p-3 rounded border border-gray-200 text-xs sm:text-sm">
-          <strong>내 돈 입금:</strong> 오전 정산금으로 <span class="text-green-600 font-bold">[계좌 B]에 ${fmt(c.bMe)}</span> 입금
-        </div>
-      </div>`},
-    { step:7, icon:'🔑', title:'입주 완료', time:'입주 당일 최종',
-      items: ['관리소 직원에게 계좌 A, B 입금 확인증 제시','전세보증금 반환 확약서 <span class="font-bold text-red-500">원본</span> 제출','새 집 번호키 수령 및 입주!']}
-  ];
+  let steps;
+  if (c.useLoan) {
+    steps = [
+      { step:1, icon:'📝', title:'전세보증금 반환서약서 준비 및 제출', time:'계약 전 (사전 진행)',
+        collapsible: true, collapseLabel: '기존 LH 전세임대 입주자만 해당',
+        items: ['현재 거주 중인 집주인과 LH 전세임대 해지(퇴거) 구두 협의','전세보증금 반환서약서 작성 및 LH 담당자에게 미리 제출 (이메일/팩스)']},
+      { step:2, icon:'✍️', title:'매입임대 계약 체결', time:'다음 주 수요일',
+        items: ['LH 고양권 지사 방문 및 계약서 작성',`<span class="font-bold text-green-600">[계좌 A]에 ${fmt(c.contractPay)} 입금</span> (기본 보증금 10%)`,"계약 후 '전환보증금 안내문' 반드시 챙기기"]},
+      { step:3, icon:'🏦', title:'대출 요건 충족 및 신청', time:'계약 직후',
+        items: [`<span class="font-bold text-green-600">[계좌 A]에 ${fmt(c.additionalPay)} 추가 입금</span>`,`(이로써 계좌 A 자기자금 ${fmt(c.aMe)} 납부 완료)`,`영수증, 계약서, 전환보증금 안내문 지참하여 은행 대출(${loanRatio}%) 신청`]},
+      { step:4, icon:'📅', title:'입주 전 이사 일정 조율', time:'입주 전',
+        items: ['관리소와 입주(이사) 날짜 및 시간 조율','필요 시 전입신고 및 확정일자 등 사전 행정절차 확인']},
+      { step:5, icon:'🌅', title:'기존 LH 전세임대 해지', time:'입주 당일 오전',
+        items: ['집주인이 LH로 기존 전세금 반환','LH 전세임대 해지 완료 및 내 몫의 정산금(15% 해당) 수령']},
+      { step:6, icon:'💸', title:'대출 실행 및 잔금 완납', time:'입주 당일 오후',
+        custom: `<div class="mt-2 space-y-2">
+          <div class="bg-gray-50 p-2.5 sm:p-3 rounded border border-gray-200 text-xs sm:text-sm">
+            <strong>은행 입금:</strong><br class="sm:hidden"> <span class="text-blue-600 font-bold">[계좌 A] ${fmt(c.aBank)}</span><br class="sm:hidden"> / <span class="text-blue-600 font-bold">[계좌 B] ${fmt(c.bBank)}</span>
+          </div>
+          <div class="bg-gray-50 p-2.5 sm:p-3 rounded border border-gray-200 text-xs sm:text-sm">
+            <strong>내 돈 입금:</strong> 오전 정산금으로 <span class="text-green-600 font-bold">[계좌 B]에 ${fmt(c.bMe)}</span> 입금
+          </div>
+        </div>`},
+      { step:7, icon:'🔑', title:'입주 완료', time:'입주 당일 최종',
+        items: ['관리소 직원에게 계좌 A, B 입금 확인증 제시','전세보증금 반환 확약서 <span class="font-bold text-red-500">원본</span> 제출','새 집 번호키 수령 및 입주!']}
+    ];
+  } else {
+    steps = [
+      { step:1, icon:'📝', title:'전세보증금 반환서약서 준비 및 제출', time:'계약 전 (사전 진행)',
+        collapsible: true, collapseLabel: '기존 LH 전세임대 입주자만 해당',
+        items: ['현재 거주 중인 집주인과 LH 전세임대 해지(퇴거) 구두 협의','전세보증금 반환서약서 작성 및 LH 담당자에게 미리 제출 (이메일/팩스)']},
+      { step:2, icon:'✍️', title:'매입임대 계약 체결', time:'다음 주 수요일',
+        items: ['LH 고양권 지사 방문 및 계약서 작성',`<span class="font-bold text-green-600">[계좌 A]에 ${fmt(c.contractPay)} 입금</span> (기본 보증금 10%)`,"계약 후 '전환보증금 안내문' 반드시 챙기기"]},
+      { step:3, icon:'💰', title:'잔금 납부', time:'입주일 전까지',
+        items: [`<span class="font-bold text-green-600">[계좌 A]에 ${fmt(c.aRemain)} 입금</span> (기본 보증금 잔금)`,`<span class="font-bold text-green-600">[계좌 B]에 ${fmt(c.convDeposit)} 입금</span> (전환 보증금 전액)`,'납부 기한은 계약서 확인 (입주일 전까지 완납)']},
+      { step:4, icon:'📅', title:'입주 전 이사 일정 조율', time:'입주 전',
+        items: ['관리소와 입주(이사) 날짜 및 시간 조율','필요 시 전입신고 및 확정일자 등 사전 행정절차 확인']},
+      { step:5, icon:'🔑', title:'입주 완료', time:'입주 당일',
+        items: ['관리소 직원에게 계좌 A, B 입금 확인증 제시','전세보증금 반환 확약서 <span class="font-bold text-red-500">원본</span> 제출','새 집 번호키 수령 및 입주!']}
+    ];
+  }
   const el = document.getElementById('content-timeline');
   el.innerHTML = steps.map((s, i) => {
     const isLast = i === steps.length - 1;
-    const body = s.custom
+    const bodyContent = s.custom
       ? `<div class="text-gray-600 text-xs sm:text-sm leading-relaxed">${s.custom}</div>`
       : `<ul class="list-disc ml-4 space-y-1 mt-2 text-gray-600 text-xs sm:text-sm leading-relaxed">${s.items.map(it => `<li>${it}</li>`).join('')}</ul>`;
+    const body = s.collapsible
+      ? `<details class="mt-2"><summary class="text-xs sm:text-sm text-amber-600 cursor-pointer select-none font-medium list-none">${s.collapseLabel || '자세히 보기'}</summary>${bodyContent}</details>`
+      : bodyContent;
     return `<div class="relative flex items-start group mb-6 sm:mb-8">
       <div class="flex-shrink-0 w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-blue-100 flex items-center justify-center border-2 sm:border-4 border-white shadow z-10">
         <span class="text-base sm:text-xl">${s.icon}</span>
@@ -597,6 +739,7 @@ if (defaultUnitIdx !== -1) {
 }
 setInputValue('input-total', totalDeposit);
 setInputValue('input-basic', basicDeposit);
+updateSliderFill();
 render();
 </script>
 </body>

@@ -223,9 +223,12 @@
         </div>
         <div class="flex items-center gap-2 mb-2.5">
           <label class="text-[11px] text-gray-400 whitespace-nowrap flex-shrink-0">대출 금액</label>
-          <input type="text" id="loan-amount-input" inputmode="numeric"
-                 oninput="onLoanAmountInput(this)" onblur="this.value=loanRatio>0?fmtNum(Math.round(totalDeposit*loanRatio/100)):''"
-                 class="flex-1 text-xs text-right text-gray-500 font-medium outline-none bg-transparent border-b border-gray-200 focus:border-blue-400 py-0.5">
+          <div class="flex-1 flex items-center border-b border-gray-200 focus-within:border-blue-400">
+            <input type="text" id="loan-amount-input" inputmode="numeric"
+                   oninput="onLoanAmountInput(this)" onblur="this.value=loanRatio>0?fmtNum(Math.round(totalDeposit*loanRatio/100)):''"
+                   class="flex-1 text-xs text-right text-gray-500 font-medium outline-none bg-transparent py-0.5">
+            <span class="text-xs text-gray-400 ml-0.5 flex-shrink-0">원</span>
+          </div>
         </div>
         <div class="flex gap-1.5 flex-wrap">
           <button class="loan-preset income-btn inactive text-xs px-2.5 py-1" data-ratio="0" onclick="setLoanRatio(0)">전액 자비</button>
